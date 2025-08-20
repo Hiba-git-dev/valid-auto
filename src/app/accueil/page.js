@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import 'animate.css';
 import Image from "next/image";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
@@ -9,6 +10,7 @@ import { faCar, faCheck, faUsersCog, faUsers } from "@fortawesome/free-solid-svg
 
 export default function Accueil() {
   const [isLoading, setIsLoading] = useState(true);
+  const animatedRefs = useRef([]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -21,6 +23,26 @@ export default function Accueil() {
     }
   }, []);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate__animated', entry.target.dataset.animate);
+            observer.unobserve(entry.target); // trigger once
+          }
+        });
+      },
+      { threshold: 0.2 } // 20% visible triggers animation
+    );
+
+    animatedRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [isLoading]);
+
   if (isLoading) {
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
@@ -30,22 +52,9 @@ export default function Accueil() {
   }
 
   const services = [
-    {
-      icon: "fa-certificate",
-      title: "Service de qualité",
-      desc: "Nous garantissons un service rapide, précis et conforme aux normes pour assurer votre sécurité sur la route.",
-    },
-    {
-      icon: "fa-users-cog",
-      title: "Staff expert",
-      desc: "Notre équipe de professionnels qualifiés met son expertise à votre service pour un contrôle fiable de votre véhicule.",
-      bg: "bg-light",
-    },
-    {
-      icon: "fa-tools",
-      title: "Équipement moderne",
-      desc: "Nous utilisons des équipements de pointe pour garantir des diagnostics précis et des contrôles techniques fiables.",
-    },
+    { icon: "fa-certificate", title: "Service de qualité", desc: "Nous garantissons un service rapide, précis et conforme aux normes pour assurer votre sécurité sur la route." },
+    { icon: "fa-users-cog", title: "Staff expert", desc: "Notre équipe de professionnels qualifiés met son expertise à votre service pour un contrôle fiable de votre véhicule.", bg: "bg-light" },
+    { icon: "fa-tools", title: "Équipement moderne", desc: "Nous utilisons des équipements de pointe pour garantir des diagnostics précis et des contrôles techniques fiables." },
   ];
 
   const stats = [
@@ -56,21 +65,9 @@ export default function Accueil() {
   ];
 
   const aboutFeatures = [
-    {
-      num: "01",
-      title: "Professionnalisme et Expertise",
-      desc: "Tous notre équipement est conforme aux nouvelles réglementations",
-    },
-    {
-      num: "02",
-      title: "Centre de service de qualité",
-      desc: "Que le meilleur pour votre voiture",
-    },
-    {
-      num: "03",
-      title: "Staff expérimenté",
-      desc: "20 de nos techniciens à votre disposition",
-    },
+    { num: "01", title: "Professionnalisme et Expertise", desc: "Tous notre équipement est conforme aux nouvelles réglementations" },
+    { num: "02", title: "Centre de service de qualité", desc: "Que le meilleur pour votre voiture" },
+    { num: "03", title: "Staff expérimenté", desc: "20 de nos techniciens à votre disposition" },
   ];
 
   return (
@@ -95,16 +92,35 @@ export default function Accueil() {
                   <div className="container">
                     <div className="row align-items-center justify-content-center justify-content-lg-start">
                       <div className="col-10 col-lg-7 text-center text-lg-start">
-                        <h6 className="text-white text-uppercase mb-3 animated slideInDown">Service Auto</h6>
-                        <h1 className="display-3 text-white mb-4 pb-3 animated slideInDown">
-                          Centre de services automobile qualifié
+                        <h6
+                          data-animate="animate__slideInDown"
+                          ref={el => animatedRefs.current.push(el)}
+                          className="text-white text-uppercase mb-3"
+                        >
+                          Service Auto
+                        </h6>
+                        <h1
+                          data-animate="animate__slideInDown"
+                          ref={el => animatedRefs.current.push(el)}
+                          className="display-3 text-white mb-4 pb-3"
+                        >
+                          <b>Centre de services automobile qualifié</b>
                         </h1>
-                        <a href="/services" className="btn py-3 px-5 animated slideInDown"
-                          style={{ backgroundColor: '#d81313', borderColor: '#dc3545', color: 'white' }}>
+                        <a
+                          href="/services"
+                          data-animate="animate__slideInDown"
+                          ref={el => animatedRefs.current.push(el)}
+                          className="btn py-3 px-5"
+                          style={{ backgroundColor: '#d81313', borderColor: '#dc3545', color: 'white' }}
+                        >
                           En savoir plus<i className="fa fa-arrow-right ms-3"></i>
                         </a>
                       </div>
-                      <div className="col-lg-5 d-none d-lg-flex animated zoomIn">
+                      <div
+                        className="col-lg-5 d-none d-lg-flex"
+                        data-animate="animate__zoomIn"
+                        ref={el => animatedRefs.current.push(el)}
+                      >
                         <Image
                           src={`/img/carousel-${i}.png`}
                           alt={`Car carousel ${i}`}
@@ -136,13 +152,19 @@ export default function Accueil() {
         <div className="container">
           <div className="row g-4">
             {services.map((s, i) => (
-              <div key={i} className={`col-lg-4 col-md-6 wow fadeInUp`} data-wow-delay={`${0.1 + i * 0.2}s`}>
+              <div
+                key={i}
+                className="col-lg-4 col-md-6"
+                data-animate="animate__fadeInUp"
+                style={{ animationDelay: `${0.2 * i}s` }}
+                ref={el => animatedRefs.current.push(el)}
+              >
                 <div className={`d-flex py-5 px-4 ${s.bg || ""}`}>
                   <i className={`fa ${s.icon} fa-3x flex-shrink-0`} style={{ color: '#d81313' }}></i>
                   <div className="ps-4">
-                    <h5 className="mb-3">{s.title}</h5>
+                    <h5 className="mb-3"><b>{s.title}</b></h5>
                     <p>{s.desc}</p>
-                    <a className="text-secondary border-bottom" href="/service">En savoir plus...</a>
+                    <a className="text-secondary border-bottom" href="/services"><b>En savoir plus...</b></a>
                   </div>
                 </div>
               </div>
@@ -156,7 +178,7 @@ export default function Accueil() {
         <div className="container">
           <div className="row g-5">
             <div className="col-lg-6 pt-4" style={{ minHeight: "400px" }}>
-              <div className="position-relative h-100 wow fadeIn" data-wow-delay="0.1s">
+              <div className="position-relative h-100" data-animate="animate__fadeIn" ref={el => animatedRefs.current.push(el)}>
                 <Image
                   src="/img/about.jpg"
                   alt="À propos"
@@ -172,12 +194,19 @@ export default function Accueil() {
               </div>
             </div>
             <div className="col-lg-6">
-              <h6 style={{ color: '#dc3545' }} className="text-uppercase">// À propos //</h6>
+              <h6 style={{ color: '#dc3545' }} className="text-uppercase">À propos</h6>
               <h1 className="mb-4"><span style={{ color: '#d81313' }}>ValidAuto</span>, le meilleur endroit pour votre véhicule</h1>
               <p className="mb-4">Chez ValidAuto, votre véhicule bénéficie d’un contrôle de qualité, réalisé par des experts avec un équipement de pointe pour une sécurité optimale.</p>
+              
               <div className="row g-4 mb-3 pb-3">
                 {aboutFeatures.map((item, i) => (
-                  <div key={i} className="col-12 wow fadeIn" data-wow-delay={`${0.1 + i * 0.2}s`}>
+                  <div
+                    key={i}
+                    className="col-12"
+                    data-animate="animate__fadeIn"
+                    style={{ animationDelay: `${0.2 * i}s` }}
+                    ref={el => animatedRefs.current.push(el)}
+                  >
                     <div className="d-flex">
                       <div className="bg-light d-flex flex-shrink-0 align-items-center justify-content-center mt-1" style={{ width: "45px", height: "45px" }}>
                         <span className="fw-bold text-secondary">{item.num}</span>
@@ -190,6 +219,7 @@ export default function Accueil() {
                   </div>
                 ))}
               </div>
+
               <a href="rendezvous" className="btn py-3 px-5" style={{ backgroundColor: '#d81313', borderColor: '#d81313', color: 'white' }}>
                 Découvrir nos offres<i className="fa fa-arrow-right ms-3"></i>
               </a>
@@ -203,7 +233,12 @@ export default function Accueil() {
         <div className="container">
           <div className="row g-4">
             {stats.map((fact, i) => (
-              <div key={i} className="col-md-6 col-lg-3 text-center wow fadeIn" data-wow-delay={`${0.1 + i * 0.2}s`}>
+              <div
+                key={i}
+                className="col-md-6 col-lg-3 text-center"
+                data-animate="animate__fadeIn"
+                ref={el => animatedRefs.current.push(el)}
+              >
                 <i className={`fa ${fact.icon} fa-2x text-white mb-3`}></i>
                 <h2 className="text-white mb-2">{fact.value}</h2>
                 <p className="text-white mb-0">{fact.label}</p>
@@ -214,7 +249,11 @@ export default function Accueil() {
       </div>
 
       {/* Call to Action */}
-      <div className="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+      <div
+        className="container-xxl py-5"
+        data-animate="animate__fadeInUp"
+        ref={el => animatedRefs.current.push(el)}
+      >
         <div className="container">
           <div className="row g-4">
             <div className="col-lg-8 col-md-6">

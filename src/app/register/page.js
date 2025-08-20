@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
@@ -15,6 +15,14 @@ export default function RegisterPage() {
     password_confirmation: "",
   });
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true); // page load spinner
+  const [submitting, setSubmitting] = useState(false); // form submission spinner
+
+  // Initial page load spinner
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -29,6 +37,8 @@ export default function RegisterPage() {
       return;
     }
 
+    setSubmitting(true); // show spinner while submitting
+
     try {
       const res = await fetch("http://127.0.0.1:8000/api/register", {
         method: "POST",
@@ -37,7 +47,6 @@ export default function RegisterPage() {
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.message || "Registration failed");
 
       localStorage.setItem("token", data.token);
@@ -47,26 +56,36 @@ export default function RegisterPage() {
     } catch (err) {
       setError(err.message);
       console.error(err);
+    } finally {
+      setSubmitting(false); // hide spinner after submission
     }
   };
+
+  // Full-page spinner during load or submission
+  if (isLoading || submitting) {
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <FontAwesomeIcon style={{ color: "#d81313" }} icon={faCar} size="5x" spin />
+      </div>
+    );
+  }
 
   return (
     <>
       <Navbar />
-      {/* Full-width background */}
       <div
         className="w-full py-10"
         style={{
-          backgroundImage: 'url("img/carousel-bg-3.jpg")', // <-- change to your image or color
+          backgroundImage: 'url("img/carousel-bg-3.jpg")',
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
         <div className="text-center mb-5">
           <FontAwesomeIcon icon={faCar} size="4x" color="red" />
+          <h3 className="mt-2 text-black">Inscrivez-vous et réservez votre rendez-vous dès maintenant</h3>
         </div>
 
-        {/* Red card centered */}
         <div
           className="h-100 d-flex flex-column justify-content-center text-center p-5 rounded mx-auto"
           style={{ backgroundColor: "#d81313", maxWidth: "600px" }}
