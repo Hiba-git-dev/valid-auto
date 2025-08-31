@@ -40,9 +40,9 @@ export default function Service(){
                 <h1 className="display-3 text-white mb-3 animated slideInDown">Services</h1>
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb justify-content-center text-uppercase">
-                        <li className="breadcrumb-item"><a href="/accueil">Home</a></li>
-                        <li className="breadcrumb-item"><a href="/rendezvous">Booking</a></li>
-                        <li className="breadcrumb-item text-white active" aria-current="page">Services</li>
+                        <li className="breadcrumb-item" style={{color:'red'}}><a href="/accueil">Home</a></li>
+                        <li className="breadcrumb-item" style={{color:'red'}}><a href="/rendezvous">Booking</a></li>
+                        <li className="breadcrumb-item text-white active" style={{color:'red'}} aria-current="page">Services</li>
                     </ol>
                 </nav>
             </div>
@@ -105,9 +105,9 @@ export default function Service(){
                                 <div className="col-md-6">
                                     <h3 className="mb-3">15 ans d'experience dans le domaine de l'entretien automobile</h3>
                                     <p className="mb-4">Avec des années d'expertise dans l'entretien moteur, nous offrons des services de vérification et de réparation de tous les composants essentiels. Assurez-vous que votre moteur fonctionne de manière optimale grâce à nos interventions spécialisées.</p>
-                                    <p><i className="fa fa-check text-success me-3"></i>Quality Servicing</p>
-                                    <p><i className="fa fa-check text-success me-3"></i>Expert Workers</p>
-                                    <p><i className="fa fa-check text-success me-3"></i>Modern Equipment</p>
+                                    <p><i className="fa fa-check text-success me-3"></i>Service de qualité</p>
+                                    <p><i className="fa fa-check text-success me-3"></i>Mechaniciens experts</p>
+                                    <p><i className="fa fa-check text-success me-3"></i>Equipement moderne</p>
                                     <a href="/rendezvous" className="btn btn-primary py-3 px-5 mt-3" style={{backgroundColor:'#d81313'}}>Résérver un rendez-vous<i className="fa fa-arrow-right ms-3"></i></a>
                                 </div>
                             </div>
@@ -123,9 +123,9 @@ export default function Service(){
                                 <div className="col-md-6">
                                     <h3 className="mb-3">15 ans d'experience dans le domaine de l'entretien automobile</h3>
                                     <p className="mb-4">Nous vous aidons à remplacer vos pneus usés ou endommagés pour garantir une conduite en toute sécurité. Profitez de notre service de montage, d'équilibrage et de choix de pneus adaptés à votre véhicule.</p>
-                                    <p><i className="fa fa-check text-success me-3"></i>Quality Servicing</p>
-                                    <p><i className="fa fa-check text-success me-3"></i>Expert Workers</p>
-                                    <p><i className="fa fa-check text-success me-3"></i>Modern Equipment</p>
+                                    <p><i className="fa fa-check text-success me-3"></i>Service de qualité</p>
+                                    <p><i className="fa fa-check text-success me-3"></i>Mechaniciens experts</p>
+                                    <p><i className="fa fa-check text-success me-3"></i>Equipement moderne</p>
                                     <a href="/rendezvous" className="btn btn-primary py-3 px-5 mt-3" style={{backgroundColor:'#d81313'}}>Résérver un rendez-vous<i className="fa fa-arrow-right ms-3"></i></a>
                                 </div>
                             </div>
@@ -141,9 +141,9 @@ export default function Service(){
                                 <div className="col-md-6">
                                     <h3 className="mb-3">15 ans d'experience dans le domaine de l'entretien automobile</h3>
                                     <p className="mb-4">Maintenez votre moteur en parfait état avec notre service de vidange. Nous changeons l'huile moteur et remplaçons le filtre pour assurer une performance optimale et prolonger la durée de vie de votre moteur.</p>
-                                    <p><i className="fa fa-check text-success me-3"></i>Quality Servicing</p>
-                                    <p><i className="fa fa-check text-success me-3"></i>Expert Workers</p>
-                                    <p><i className="fa fa-check text-success me-3"></i>Modern Equipment</p>
+                                    <p><i className="fa fa-check text-success me-3"></i>Service de qualité</p>
+                                    <p><i className="fa fa-check text-success me-3"></i>Mechaniciens experts</p>
+                                    <p><i className="fa fa-check text-success me-3"></i>Equipement moderne</p>
                                     <a href="/rendezvous" className="btn btn-primary py-3 px-5 mt-3" style={{backgroundColor:'#d81313'}}>Résérver un rendez-vous<i className="fa fa-arrow-right ms-3"></i></a>
                                 </div>
                             </div>

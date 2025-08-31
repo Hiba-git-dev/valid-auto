@@ -78,7 +78,7 @@ export default function Footer() {
             <div className="row">
               <div className="col-md-6 text-center text-md-start mb-3 mb-md-0">
                 &copy; <a className="border-bottom" style={{ color: '#d81313' }} href="#">ValidAuto</a>, Tous droits réservés. <br />
-                Behind the work, there’s someone I’ll never stop cherishing -A 🩷,<br />
+                Behind all the work, there’s someone I’ll never stop cherishing -A 🩷,<br />
                 <br />
                 Designed By <a className="border-bottom" style={{ color: '#d81313' }} href="https://htmlcodex.com">HTML Codex</a>
               </div>

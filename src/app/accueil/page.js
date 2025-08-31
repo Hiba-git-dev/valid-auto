@@ -220,7 +220,7 @@ export default function Accueil() {
                 ))}
               </div>
 
-              <a href="rendezvous" className="btn py-3 px-5" style={{ backgroundColor: '#d81313', borderColor: '#d81313', color: 'white' }}>
+              <a href="services" className="btn py-3 px-5" style={{ backgroundColor: '#d81313', borderColor: '#d81313', color: 'white' }}>
                 Découvrir nos offres<i className="fa fa-arrow-right ms-3"></i>
               </a>
             </div>

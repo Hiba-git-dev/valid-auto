@@ -11,14 +11,14 @@ export default function RegisterPage() {
   const [form, setForm] = useState({
     name: "",
     email: "",
+    telephone: "",
     password: "",
     password_confirmation: "",
   });
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(true); // page load spinner
-  const [submitting, setSubmitting] = useState(false); // form submission spinner
+  const [isLoading, setIsLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-  // Initial page load spinner
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
@@ -37,13 +37,19 @@ export default function RegisterPage() {
       return;
     }
 
-    setSubmitting(true); // show spinner while submitting
+    setSubmitting(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/register", {
+      const res = await fetch("http://127.0.0.1:8000/api/register-client", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          nom: form.name, // map frontend name -> backend nom
+          email: form.email,
+          telephone: form.telephone,
+          password: form.password,
+          password_confirmation: form.password_confirmation,
+        }),
       });
 
       const data = await res.json();
@@ -52,16 +58,15 @@ export default function RegisterPage() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      router.push("/rendezvous"); // redirect after success
+      router.push("/rendezvous");
     } catch (err) {
       setError(err.message);
       console.error(err);
     } finally {
-      setSubmitting(false); // hide spinner after submission
+      setSubmitting(false);
     }
   };
 
-  // Full-page spinner during load or submission
   if (isLoading || submitting) {
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
@@ -82,7 +87,7 @@ export default function RegisterPage() {
         }}
       >
         <div className="text-center mb-5">
-          <FontAwesomeIcon icon={faCar} size="4x" color="red" />
+          <FontAwesomeIcon icon={faCar} size="4x" color="red" style={{ marginTop: "15px" }} />
           <h3 className="mt-2 text-black">Inscrivez-vous et réservez votre rendez-vous dès maintenant</h3>
         </div>
 
@@ -106,6 +111,15 @@ export default function RegisterPage() {
               type="email"
               placeholder="Email"
               value={form.email}
+              onChange={handleChange}
+              className="form-control mb-3"
+              required
+            />
+            <input
+              name="telephone"
+              type="text"
+              placeholder="Telephone"
+              value={form.telephone}
               onChange={handleChange}
               className="form-control mb-3"
               required

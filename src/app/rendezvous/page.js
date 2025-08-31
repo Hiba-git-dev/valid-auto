@@ -12,7 +12,6 @@ function useAnimateOnScroll(ref, className, delay = 0) {
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -22,7 +21,6 @@ function useAnimateOnScroll(ref, className, delay = 0) {
       },
       { threshold: 0.2 }
     );
-
     observer.observe(element);
     return () => observer.disconnect();
   }, [ref, className, delay]);
@@ -37,6 +35,7 @@ export default function Rendezvous() {
     email: "",
     service: "",
     date: null,
+    time: "",
     requete: "",
     marque: "",
     year: "",
@@ -46,6 +45,7 @@ export default function Rendezvous() {
 
   const [formData, setFormData] = useState(initialFormData);
   const [availableDates, setAvailableDates] = useState([]);
+  const [availableHours, setAvailableHours] = useState([]);
 
   // Protect page
   useEffect(() => {
@@ -64,7 +64,11 @@ export default function Rendezvous() {
           setAvailableDates(
             res.data.map((d) => {
               const date = new Date(d);
-              return new Date(date.getFullYear(), date.getMonth(), date.getDate()); // normalize to local midnight
+              return new Date(
+                date.getFullYear(),
+                date.getMonth(),
+                date.getDate()
+              );
             })
           )
         )
@@ -81,19 +85,26 @@ export default function Rendezvous() {
     try {
       const token = localStorage.getItem("token");
       const payload = {
-        ...data,
-        date: data.date
-          ? `${data.date.getFullYear()}-${String(data.date.getMonth() + 1).padStart(
-              2,
-              "0"
-            )}-${String(data.date.getDate()).padStart(2, "0")}`
-          : "",
-      };
-      const res = await axios.post("http://127.0.0.1:8000/api/rendezvous", payload, {
-        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
-      });
+  ...data,
+  date: data.date
+    ? `${data.date.getFullYear()}-${String(data.date.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}-${String(data.date.getDate()).padStart(2, "0")}`
+    : "",
+  hour: data.time || "", // <- renamed from time to hour
+};
+
+      const res = await axios.post(
+        "http://127.0.0.1:8000/api/rendezvous",
+        payload,
+        {
+          headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+        }
+      );
       alert(res.data.message || "Rendez-vous enregistré avec succès !");
       setFormData(initialFormData);
+      setAvailableHours([]);
     } catch (error) {
       console.error("Erreur lors de l'enregistrement", error.response?.data || error.message);
       alert(error.response?.data?.message || "Erreur lors de l’enregistrement.");
@@ -109,7 +120,6 @@ export default function Rendezvous() {
   const headerRef = useRef();
   const leftColRef = useRef();
   const formRef = useRef();
-
   useAnimateOnScroll(headerRef, "animate-slide-up");
   useAnimateOnScroll(leftColRef, "animate-slide-up", 200);
   useAnimateOnScroll(formRef, "animate-zoom-in", 400);
@@ -121,17 +131,15 @@ export default function Rendezvous() {
       <Navbar />
 
       {/* Page Header */}
-      <div className="container-fluid page-header mb-5 p-0" style={{ backgroundImage: 'url(img/carousel-bg-1.jpg)' }}>
+      <div
+        className="container-fluid page-header mb-5 p-0"
+        style={{ backgroundImage: 'url(img/carousel-bg-1.jpg)' }}
+      >
         <div className="container-fluid page-header-inner py-5">
           <div className="container text-center">
-            <h1 ref={headerRef} className="display-3 text-white">Booking</h1>
-            <nav aria-label="breadcrumb">
-              <ol className="breadcrumb justify-content-center text-uppercase">
-                <li className="breadcrumb-item"><a href="/accueil">Home</a></li>
-                <li className="breadcrumb-item"><a href="/contact">Contact</a></li>
-                <li className="breadcrumb-item text-white active" aria-current="page">Booking</li>
-              </ol>
-            </nav>
+            <h1 ref={headerRef} className="display-3 text-white">
+              Booking
+            </h1>
           </div>
         </div>
       </div>
@@ -146,9 +154,6 @@ export default function Rendezvous() {
                 <h1 className="text-white mb-4">
                   Fournisseur de services de réparation automobile certifié et primé
                 </h1>
-                <p className="text-white mb-0">
-                  Plus qu’une marque, ValidAuto est devenu en 15 ans un acteur majeur du contrôle technique automobile.
-                </p>
               </div>
             </div>
 
@@ -183,25 +188,56 @@ export default function Rendezvous() {
                       </div>
                     ))}
 
+                    {/* Date Picker */}
                     <div className="col-12 col-sm-6">
-  <DatePicker
-    selected={formData.date ? new Date(formData.date + "T00:00") : null} // force local midnight
-    onChange={(date) => {
-      // store as yyyy-mm-dd string immediately
-      const yyyy = date.getFullYear();
-      const mm = String(date.getMonth() + 1).padStart(2, "0");
-      const dd = String(date.getDate()).padStart(2, "0");
-      setFormData(prev => ({ ...prev, date: `${yyyy}-${mm}-${dd}` }));
-    }}
-    includeDates={availableDates.map(d => new Date(d + "T00:00"))}
-    dateFormat="yyyy-MM-dd"
-    placeholderText="Sélectionner une date disponible"
-    className="form-control border-0"
-    style={{ height: '55px' }}
-  />
-</div>
+                      <DatePicker
+                        selected={formData.date}
+                        onChange={async (date) => {
+                          setFormData(prev => ({ ...prev, date, time: "" }));
+                          if (!date) return;
+
+                          try {
+                            const token = localStorage.getItem("token");
+                            const res = await axios.get(
+                              `http://127.0.0.1:8000/api/available-hours?date=${date.toISOString().split('T')[0]}`,
+                              { headers: { Authorization: `Bearer ${token}` } }
+                            );
+                            setAvailableHours(res.data);
+                          } catch (err) {
+                            console.error("Erreur chargement heures:", err);
+                            setAvailableHours([]);
+                          }
+                        }}
+                        includeDates={availableDates}
+                        dateFormat="yyyy-MM-dd"
+                        placeholderText="Sélectionner une date disponible"
+                        className="form-control border-0"
+                        style={{ height: '55px' }}
+                      />
+                    </div>
+
+                    {/* Hour select */}
+                    <div className="col-12 col-sm-6" style={{ position: 'relative' }}>
+                      <select
+  className="form-select border-0"
+  style={{ height: "55px" }}
+  name="time"
+  value={formData.time}
+  onChange={e => setFormData(prev => ({ ...prev, time: e.target.value }))}
+  disabled={!availableHours.length}
+>
+  <option value="">Sélectionner une heure</option>
+  {availableHours.map((hour) => (
+    <option key={hour} value={hour}>
+      {hour}
+    </option>
+  ))}
+</select>
 
 
+                    </div>
+
+                    {/* Service */}
                     <div className="col-12 col-sm-6">
                       <select
                         className="form-select border-0"
@@ -240,7 +276,6 @@ export default function Rendezvous() {
                 </form>
               </div>
             </div>
-
           </div>
         </div>
       </div>

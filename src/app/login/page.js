@@ -70,7 +70,7 @@ export default function LoginPage() {
         }}
       >
         <div className="text-center mb-5">
-          <FontAwesomeIcon icon={faCar} size="4x" color="red" />
+          <FontAwesomeIcon icon={faCar} size="4x" color="red" style={{marginTop: "15px"}}/>
           <h3 className="mt-2 text-black">Connectez-vous pour accéder aux rendez-vous</h3>
         </div>
 
