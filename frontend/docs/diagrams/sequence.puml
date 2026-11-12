@@ -1,0 +1,26 @@
+@startuml
+autonumber
+skinparam shadowing false
+skinparam roundcorner 8
+
+actor Client
+participant "Frontend (Next.js)" as UI
+participant "Backend API (Laravel)" as API
+database "Base de Données" as DB
+participant "Service Paiement" as PayService
+
+Client -> UI : Sélectionne créneau & véhicule
+UI -> API : POST /api/rendez-vous (token, infos)
+API -> DB : Insérer rendez-vous (statut: 'en_attente')
+DB --> API : Confirmation (rdv_id)
+API --> UI : Réponse 201 Created (rdv_id)
+
+Client -> UI : Procède au paiement
+UI -> PayService : Initier transaction (montant, rdv_id)
+PayService --> UI : Confirmation paiement réussi
+UI -> API : PATCH /api/rendez-vous/{id}/payer
+API -> DB : Mettre à jour statut ('confirmé', 'payé')
+DB --> API : OK
+API --> UI : 200 OK (Rendez-vous validé)
+UI --> Client : Affichage confirmation + Reçu téléchargeable
+@enduml

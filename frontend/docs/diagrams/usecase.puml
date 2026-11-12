@@ -1,0 +1,53 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam roundcorner 8
+
+actor "Client" as client
+actor "Administrateur" as admin
+
+rectangle "ValidAuto - Système" {
+  package "Authentification" {
+    usecase "S'inscrire / Se connecter" as UC_Auth
+    usecase "Gérer son profil" as UC_Profile
+  }
+
+  package "Réservation & Contrôle" {
+    usecase "Consulter les créneaux" as UC_Creneaux
+    usecase "Prendre un rendez-vous" as UC_RDV
+    usecase "Suivre le statut du contrôle" as UC_Statut
+    usecase "Annuler un rendez-vous" as UC_Cancel
+  }
+
+  package "Rapports & Paiement" {
+    usecase "Consulter rapport technique (PDF)" as UC_Report
+    usecase "Effectuer le paiement en ligne" as UC_Pay
+  }
+
+  package "Administration & Gestion" {
+    usecase "Gérer le calendrier & rendez-vous" as UC_ManageRDV
+    usecase "Émettre rapport d'inspection" as UC_CreateReport
+    usecase "Gérer les clients & véhicules" as UC_ManageUsers
+  }
+}
+
+client --> UC_Auth
+client --> UC_Profile
+client --> UC_Creneaux
+client --> UC_RDV
+client --> UC_Statut
+client --> UC_Cancel
+client --> UC_Report
+client --> UC_Pay
+
+admin --> UC_Auth
+admin --> UC_ManageRDV
+admin --> UC_CreateReport
+admin --> UC_ManageUsers
+
+UC_RDV ..> UC_Creneaux : <<include>>
+UC_Pay ..> UC_RDV : <<extend>>
+UC_Cancel ..> UC_Statut : <<extend>>
+
+@enduml

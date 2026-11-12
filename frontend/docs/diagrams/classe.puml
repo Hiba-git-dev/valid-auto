@@ -1,0 +1,75 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam roundcorner 8
+
+class Client {
+  - id: int
+  - nom: string
+  - email: string
+  - telephone: string
+  - password: string
+  + sInscrire()
+  + seConnecter()
+  + modifierProfil()
+}
+
+class Administrateur {
+  - id: int
+  - nom: string
+  - email: string
+  - role: string
+  + validerRDV()
+  + genererRapport()
+}
+
+class Vehicule {
+  - id: int
+  - matricule: string
+  - marque: string
+  - modele: string
+  - annee: int
+  - kilometrage: int
+}
+
+class RendezVous {
+  - id: int
+  - date: Date
+  - heure: string
+  - typeService: string
+  - statut: string
+  - notes: string
+  + reserver()
+  + annuler()
+  + modifierStatut()
+}
+
+class RapportTechnique {
+  - id: int
+  - dateInspection: Date
+  - resultat: string
+  - defauts: string
+  - fichierPdfUrl: string
+  + genererPDF()
+  + telecharger()
+}
+
+class Paiement {
+  - id: int
+  - montant: float
+  - datePaiement: DateTime
+  - methode: string
+  - statut: string
+  + traiterPaiement()
+  + emettreRecu()
+}
+
+Client "1" -- "0..*" Vehicule : possède >
+Client "1" -- "0..*" RendezVous : réserve >
+Vehicule "1" -- "0..*" RendezVous : concerne <
+RendezVous "1" -- "0..1" RapportTechnique : génère >
+RendezVous "1" -- "0..1" Paiement : nécessite >
+Administrateur "1" -- "0..*" RapportTechnique : rédige >
+Administrateur "1" -- "0..*" RendezVous : supervise >
+
+@enduml
